@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <link rel="stylesheet" href="loginstyles.css" type="text/css">
+  </head>
+
+  <body>
+    <center>
+      <div style="margin-top:305px">
+        <form action = "{{ url_for('login') }}" method="POST">
+          Username
+          <input type="text" name="username">
+          <br><br>
+          Password
+          <input type="password" name="password">
+          <br>
+          <a>
+            <button style="margin-top:20px; width:200px">
+              Login
+            </button>
+          </a>
+        </form>
+
+          <h3>
+            New User?
+              <a href= "abc"> Register Here!</a>
+          </h3>
+      </div>
+    </center>
+
+  </body>
+</html>

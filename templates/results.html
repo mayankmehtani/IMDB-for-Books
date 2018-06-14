@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+  </head>
+
+  <body>
+
+    <ul>
+      {% for result in results %}
+        <ol>
+          {% for entry in result %}
+            <li>{{ entry }}</li>
+          {% endfor %}
+
+        </ol>
+        <br>
+      {% endfor %}
+    </ul>
+
+  </body>
+
+</html>

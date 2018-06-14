@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+  <body>
+
+    <center>
+      <div class="topnav" style="margin-top:275px">
+        <form action = "{{ url_for('search') }}" method="POST">
+          Search by ISBN, Author, Title
+          <br>
+          <input type="text" placeholder="Search" name="Searchbar1">
+          <input type="text" placeholder="Search" name="Searchbar2">
+          <input type="text" placeholder="Search" name="Searchbar3">
+          <br>
+          <a>
+            <button style="margin-top:20px; width:200px">
+              Search
+            </button>
+          </a>
+
+        </form>
+     </div>
+   </center>
+
+   <br>
+
+  </body>
+
+</html>
