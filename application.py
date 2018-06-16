@@ -39,23 +39,26 @@ def login():
             return render_template("home.html")
     return "These aren't the droids you're looking for"
 
-@app.route("/books/<int:isbn>", methods=["GET,POST"])
+@app.route("/books/<int:isbn>", methods=["GET","POST"])
 def book_page(isbn):
     """opens book page"""
-    book_data = get_book_info(isbn)
+    information = get_book_info(isbn,db)
+    print (information)
 
-    list1 = []
-    list2 = []
-    for result in results:
-        list2.append((result['isbn']).encode('utf-8'))
-        list2.append((result['author']).encode('utf-8'))
-        list2.append((result['title']).encode('utf-8'))
-        list2.append((result['title']).encode('utf-8'))
-        list1.append(list2)
-        list2 =[]
+    book_data = {}
+    for info in information:
+        isbn_ = (info['isbn']).encode('utf-8')
+        if not (isbn_).isdigit():
+            book_data['isbn'] = '00000'
+        else:
+            book_data['isbn'] = isbn_
 
 
-    return render_template("book.html")
+        book_data['author'] = (info['author']).encode('utf-8')
+        book_data['title'] = (info['title']).encode('utf-8')
+
+    return render_template("book.html",isbn=int(book_data['isbn']),\
+    author=book_data['author'], title=book_data['title'])
 
 @app.route("/results", methods=["GET","POST"])
 def search():
@@ -65,6 +68,7 @@ def search():
         query2 = request.form['Searchbar2']
         query3 = request.form['Searchbar3']
         results =  search_books(query1,query2,query3,db)
+        print (results)
 
         isbn_list = []
         authors = []
@@ -73,7 +77,12 @@ def search():
         list1 = []
         list2 = []
         for result in results:
-            list2.append((result['isbn']).encode('utf-8'))
+            isbn_result = str((result['isbn']).encode('utf-8'))
+
+            if not isbn_result.isdigit():
+                isbn_result = isbn_result[0:len(isbn_result)-1] + '10'
+
+            list2.append( int(isbn_result) )
             list2.append((result['author']).encode('utf-8'))
             list2.append((result['title']).encode('utf-8'))
             list1.append(list2)

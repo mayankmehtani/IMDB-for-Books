@@ -39,9 +39,7 @@ def search_books(isbn_query,author_query,title_query,database):
     return results
 
 def get_book_info(isbn,database):
-    """ """
+    """returns information on a book (e.g. Author, Title, ISBN, DATE)"""
+    isbn_query = '%{0}%'.format(isbn)
     results = database.execute("SELECT * FROM books WHERE (isbn like :isbn)",{"isbn":isbn_query})
     return results
-
-
-    return book_information

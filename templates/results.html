@@ -1,8 +1,5 @@
 <!DOCTYPE html>
 <html>
-  <head>
-
-  </head>
 
   <body>
     <center>
@@ -16,15 +13,22 @@
       <li>
         <ul>
           {% for entry in result %}
-            <li>
-              {{entry}}
-            </li>
+            {% if entry is number %}
+              <li>
+                <a href= "/books/{{entry}}">
+                  {{entry}}
+                </a>
+              </li>
+            {% else %}
+              <li>
+                {{entry}}
+              </li>
+            {% endif %}
           {% endfor %}
         </ul>
       </li>
       <br>
       {% endfor %}
-
     </ol>
 
   </body>
