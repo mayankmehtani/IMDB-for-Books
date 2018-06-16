@@ -5,19 +5,27 @@
   </head>
 
   <body>
+    <center>
+      <h1>
+        Your Results
+      </h1>
+    </center>
 
-    <ul>
+    <ol>
       {% for result in results %}
-        <ol>
+      <li>
+        <ul>
           {% for entry in result %}
-            <li>{{ entry }}</li>
+            <li>
+              {{entry}}
+            </li>
           {% endfor %}
-
-        </ol>
-        <br>
+        </ul>
+      </li>
+      <br>
       {% endfor %}
-    </ul>
+
+    </ol>
 
   </body>
-
 </html>

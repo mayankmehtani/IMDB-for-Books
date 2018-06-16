@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
-
   <body>
-
     <center>
-      <div class="topnav" style="margin-top:275px">
+      <div class="topnav" style="margin-top:150px">
+        <img src = {{ url_for('static', filename='book_icon.jpg') }} style="width:160px">
         <form action = "{{ url_for('search') }}" method="POST">
-          Search by ISBN, Author, Title
+          Search By: ISBN Author & Book Title
           <br>
           <input type="text" placeholder="Search" name="Searchbar1">
           <input type="text" placeholder="Search" name="Searchbar2">
@@ -17,13 +16,9 @@
               Search
             </button>
           </a>
-
         </form>
-     </div>
+      </div>
    </center>
-
    <br>
-
   </body>
-
 </html>
