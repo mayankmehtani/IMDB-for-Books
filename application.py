@@ -42,23 +42,26 @@ def login():
 @app.route("/books/<int:isbn>", methods=["GET","POST"])
 def book_page(isbn):
     """opens book page"""
-    information = get_book_info(isbn,db)
-    print (information)
+    book_information = get_book_info(isbn,db)
 
     book_data = {}
-    for info in information:
+    for info in book_information:
         isbn_ = (info['isbn']).encode('utf-8')
         if not (isbn_).isdigit():
             book_data['isbn'] = '00000'
         else:
             book_data['isbn'] = isbn_
-
-
         book_data['author'] = (info['author']).encode('utf-8')
         book_data['title'] = (info['title']).encode('utf-8')
 
+    review_list = []
+    review_information = get_reviews(isbn,db)
+    for info in review_information:
+        review_list.append([(info['username']).encode('utf-8'), \
+        (info['review']).encode('utf-8')])
+
     return render_template("book.html",isbn=int(book_data['isbn']),\
-    author=book_data['author'], title=book_data['title'])
+    author=book_data['author'],title=book_data['title'], reviews = review_list)
 
 @app.route("/results", methods=["GET","POST"])
 def search():
@@ -80,8 +83,9 @@ def search():
             isbn_result = str((result['isbn']).encode('utf-8'))
 
             if not isbn_result.isdigit():
-                isbn_result = isbn_result[0:len(isbn_result)-1] + '10'
+                isbn_result = isbn_result[0:len(isbn_result)-1]
 
+            print (isbn_result)
             list2.append( int(isbn_result) )
             list2.append((result['author']).encode('utf-8'))
             list2.append((result['title']).encode('utf-8'))

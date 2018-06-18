@@ -32,11 +32,21 @@
       <br>
       Number of Reviews:
 
+    </div>
+
       <h3>
-          User Reviews
+          <u>
+            User Reviews
+          </u>
       </h3>
 
-    </div>
+
+    {% for review in reviews %}
+      Review By: {{review[0]}}
+      <br>
+      <br>
+      {{review[1]}}
+    {% endfor %}
 
   </body>
 
