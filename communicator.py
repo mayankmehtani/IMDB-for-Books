@@ -7,6 +7,7 @@ from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+
 def check_login(user_name,password1,database):
     """checks a users' login credentials"""
     results = database.execute("SELECT * FROM users WHERE username = :username", {"username": user_name})
@@ -15,6 +16,11 @@ def check_login(user_name,password1,database):
     for entry in results:
         return (entry[0] == user_name and entry[1] == password1)
     return False
+
+def create_user(user_name,user_password,database):
+    """creates a new user on our PostgreSQL Database"""
+    database.execute("INSERT INTO users (username,password) values (user_name,user_password)")
+    return None
 
 def search_books(isbn_query,author_query,title_query,database):
     """searches through our books database"""

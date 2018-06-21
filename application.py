@@ -39,6 +39,11 @@ def login():
             return render_template("home.html")
     return "These aren't the droids you're looking for"
 
+@app.route("/newuser", methods=["GET","POST"])
+def register():
+    """Register New User"""
+    
+
 @app.route("/books/<int:isbn>", methods=["GET","POST"])
 def book_page(isbn):
     """opens book page"""
@@ -85,7 +90,6 @@ def search():
             if not isbn_result.isdigit():
                 isbn_result = isbn_result[0:len(isbn_result)-1]
 
-            print (isbn_result)
             list2.append( int(isbn_result) )
             list2.append((result['author']).encode('utf-8'))
             list2.append((result['title']).encode('utf-8'))
