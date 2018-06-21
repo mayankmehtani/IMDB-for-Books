@@ -17,10 +17,11 @@ def check_login(user_name,password1,database):
         return (entry[0] == user_name and entry[1] == password1)
     return False
 
-def create_user(user_name,user_password,database):
+def register_user(user_name,user_password,database):
     """creates a new user on our PostgreSQL Database"""
-    database.execute("INSERT INTO users (username,password) values (user_name,user_password)")
-    return None
+    results = database.execute("INSERT INTO users (username,password) VALUES (user_name,user_password)")
+    print (results)
+    return True
 
 def search_books(isbn_query,author_query,title_query,database):
     """searches through our books database"""

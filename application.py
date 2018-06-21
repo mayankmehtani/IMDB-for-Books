@@ -39,10 +39,21 @@ def login():
             return render_template("home.html")
     return "These aren't the droids you're looking for"
 
+def registration():
+    """Signs Up"""
+    if request.method == 'POST':
+        user_name = request.form['username']
+        password = request.form['password']
+
+    if register(user_name,password,db):
+        return render_template("home.html")
+
+    return "Not successful"
+
 @app.route("/newuser", methods=["GET","POST"])
-def register():
-    """Register New User"""
-    
+def newuser():
+    """Opens New User Page"""
+    return render_template("newuser.html")
 
 @app.route("/books/<int:isbn>", methods=["GET","POST"])
 def book_page(isbn):
