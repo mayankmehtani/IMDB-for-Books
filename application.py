@@ -39,16 +39,18 @@ def login():
             return render_template("home.html")
     return "These aren't the droids you're looking for"
 
+@app.route("/registration", methods=["GET","POST"])
 def registration():
     """Signs Up"""
     if request.method == 'POST':
         user_name = request.form['username']
         password = request.form['password']
 
-    if register(user_name,password,db):
-        return render_template("home.html")
-
-    return "Not successful"
+        if not register(user_name,password,db):
+            print ("Duplicates not allowed")
+            return "GREAT SUCCESS!"
+        else:
+            return "Great Failure"
 
 @app.route("/newuser", methods=["GET","POST"])
 def newuser():

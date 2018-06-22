@@ -6,6 +6,7 @@ from flask import url_for
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.sql import insert, table
 
 
 def check_login(user_name,password1,database):
@@ -17,11 +18,14 @@ def check_login(user_name,password1,database):
         return (entry[0] == user_name and entry[1] == password1)
     return False
 
-def register_user(user_name,user_password,database):
+def register(user_name,user_password,database):
     """creates a new user on our PostgreSQL Database"""
-    results = database.execute("INSERT INTO users (username,password) VALUES (user_name,user_password)")
-    print (results)
-    return True
+    try:
+        database.execute("INSERT INTO users (username,password) VALUES (:username,:password)",{"username":user_name,"password":user_password})
+        database.commit()
+        return True
+    except:
+        return False
 
 def search_books(isbn_query,author_query,title_query,database):
     """searches through our books database"""
