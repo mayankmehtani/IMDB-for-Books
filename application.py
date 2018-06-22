@@ -1,7 +1,7 @@
 import os
 import psycopg2
 
-from flask import Flask, session, render_template, request
+from flask import Flask, session, render_template, request, redirect
 from flask import url_for
 from flask_session import Session
 from sqlalchemy import create_engine
@@ -28,7 +28,11 @@ def index():
     """Login Page"""
     return render_template("login.html")
 
-@app.route("/home", methods=["GET","POST"])
+@app.route("/home")
+def home():
+    return render_template("home.html")
+
+@app.route("/login", methods=["GET","POST"])
 def login():
     """Logs In"""
     if request.method == 'POST':
@@ -36,8 +40,9 @@ def login():
         password = request.form['password']
 
         if check_login(user_name,password,db):
-            return render_template("home.html")
-    return "These aren't the droids you're looking for"
+            return redirect(url_for('home'))
+        else:
+            return "These aren't the droids you're looking for"
 
 @app.route("/registration", methods=["GET","POST"])
 def registration():
@@ -46,11 +51,12 @@ def registration():
         user_name = request.form['username']
         password = request.form['password']
 
-        if not register(user_name,password,db):
-            print ("Duplicates not allowed")
-            return "GREAT SUCCESS!"
+        if register(user_name,password,db):
+            return redirect(url_for('home'))
         else:
-            return "Great Failure"
+            return "This username has already been taken!"
+
+    return "This was done by getting"
 
 @app.route("/newuser", methods=["GET","POST"])
 def newuser():
