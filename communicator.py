@@ -8,7 +8,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.sql import insert, table
 
-
 def check_login(user_name,password1,database):
     """checks a users' login credentials"""
     results = database.execute("SELECT * FROM users WHERE username = :username", {"username": user_name})
@@ -20,6 +19,12 @@ def check_login(user_name,password1,database):
 
 def register(user_name,user_password,database):
     """creates a new user on our PostgreSQL Database"""
+    if user_name = "":
+        return False
+
+    if user_password = "":
+        return False
+        
     try:
         database.execute("INSERT INTO users (username,password) VALUES (:username,:password)",{"username":user_name,"password":user_password})
         database.commit()

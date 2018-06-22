@@ -2,18 +2,18 @@
 <html>
 
   <head>
-    <link rel="stylesheet" href="loginstyles.css" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/loginstyles.css') }}" type="text/css">
   </head>
 
   <body>
     <center>
 
-      <div style="margin-top:100px">
+      <div style="margin-top:175px">
         <h2>
           New User SignUp!
         </h2>
 
-        <img src = {{ url_for('static', filename='book_icon.jpg') }} style="width:160px">
+        <img src = {{ url_for('static', filename='book_icon.png') }} style="width:160px">
         <form action = "{{ url_for('registration') }}" method="POST">
           Username
           <input type="text" name="username">
@@ -25,7 +25,7 @@
           <br>
           <a>
             <button>
-              Register!
+              Register Now!
             </button>
           </a>
         </form>

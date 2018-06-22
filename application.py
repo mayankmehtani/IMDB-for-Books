@@ -54,7 +54,7 @@ def registration():
         if register(user_name,password,db):
             return redirect(url_for('home'))
         else:
-            return "This username has already been taken!"
+            return "You did not enter a username/password or this user already exists!"
 
     return "This was done by getting"
 
