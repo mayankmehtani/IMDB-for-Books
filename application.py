@@ -1,6 +1,5 @@
 import os
 import psycopg2
-
 from flask import Flask, session, render_template, request, redirect
 from flask import url_for
 from flask_session import Session
