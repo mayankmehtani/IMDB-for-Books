@@ -34,7 +34,7 @@ def home():
 
 @app.route("/login", methods=["GET","POST"])
 def login():
-    """Logs In"""
+    """Log In Method"""
     if request.method == 'POST':
         user_name = request.form['username']
         password = request.form['password']
@@ -94,7 +94,7 @@ def search():
         query1 = request.form['Searchbar1']
         query2 = request.form['Searchbar2']
         query3 = request.form['Searchbar3']
-        results =  search_books(query1,query2,query3,db)
+        results =  search_books(query1,query2,query3,db) # calls from communicator class
         print (results)
 
         isbn_list = []
