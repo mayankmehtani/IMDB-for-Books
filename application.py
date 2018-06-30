@@ -7,8 +7,10 @@ from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from communicator import *
+import requests
 
 app = Flask(__name__)
+api_key = 'JwDBt0sa68ErzbiliE9w'
 
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
@@ -75,6 +77,13 @@ def book_api(isbn):
         book_data['author'] = (info['author']).encode('utf-8')
         book_data['title'] = (info['title']).encode('utf-8')
         book_data['year'] = (info['year']).encode('utf-8')
+
+        res = requests.get("https://www.goodreads.com/book/review_counts.json", \
+        params={"key": api_key, "isbns": isbn_})
+        goodreads_book_info=res.json()
+        book_data['average_rating'] = goodreads_book_info['books'][0]['average_rating']
+        book_data['total_reviews'] = goodreads_book_info['books'][0]['reviews_count']
+
     return jsonify(book_data)
 
 @app.route("/books/<int:isbn>", methods=["GET","POST"])
