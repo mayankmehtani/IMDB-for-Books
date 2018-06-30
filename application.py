@@ -1,6 +1,7 @@
 import os
 import psycopg2
 from flask import Flask, session, render_template, request, redirect
+from flask import jsonify
 from flask import url_for
 from flask_session import Session
 from sqlalchemy import create_engine
@@ -61,6 +62,23 @@ def registration():
 def newuser():
     """Opens New User Page"""
     return render_template("newuser.html")
+
+@app.route("/api/<int:isbn>", methods=["GET"])
+def book_api(isbn):
+    """return a json object with book information"""
+    book_information = get_book_info(isbn,db)
+
+    book_data = {}
+    for info in book_information:
+        isbn_ = (info['isbn']).encode('utf-8')
+        if not (isbn_).isdigit():
+            book_data['isbn'] = '00000'
+        else:
+            book_data['isbn'] = isbn_
+        book_data['author'] = (info['author']).encode('utf-8')
+        book_data['title'] = (info['title']).encode('utf-8')
+    return jsonify(book_data)
+
 
 @app.route("/books/<int:isbn>", methods=["GET","POST"])
 def book_page(isbn):
