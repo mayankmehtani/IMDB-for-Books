@@ -48,7 +48,7 @@ def search_books(isbn_query,author_query,title_query,database):
 
     # something definitely not possible if the user did not enter a title to search for
     if title_query == '%%':
-        author_query = "The Bigly Curious Case of Donald Trump"
+        title_query = "The Bigly Curious Case of Donald Trump"
 
     results = database.execute("Select * from books where (isbn like :isbn) or (author like :author) \
     or (title like :title)",{"isbn":isbn_query,"author":author_query,"title":title_query})
