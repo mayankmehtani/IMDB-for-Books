@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/loginstyles.css')}}">
   </head>
 
   <body>
@@ -24,13 +25,13 @@
       ISBN: {{isbn}}
       <br>
       <br>
-      Year:
+      Year: {{year}}
       <br>
       <br>
-      Average Reader Rating:
+      Average Reader Rating on Goodreads: {{average_rating}}
       <br>
       <br>
-      Number of Reviews:
+      Number of Reviews on Goodreads: {{total_reviews}}
 
     </div>
 
@@ -50,8 +51,11 @@
       <br>
     {% endfor %}
 
-    <textarea style="width:500px; height:100px">
-    </textarea>
+    <form id = "form1">
+      <textarea style="width:500px; height:100px">
+      </textarea>
+    </form>
+    <button type="submit" form="form1" value="Submit">Submit</button>
   </body>
 
 </html>

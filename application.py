@@ -46,19 +46,18 @@ def login():
         else:
             return "These aren't the droids you're looking for"
 
-@app.route("/registration", methods=["GET","POST"])
+@app.route("/registration", methods=["POST","GET"])
 def registration():
     """Signs Up"""
-    if request.method == 'POST':
-        user_name = request.form['username']
-        password = request.form['password']
 
-        if register(user_name,password,db):
-            return redirect(url_for('home'))
-        else:
-            return "You did not enter a username/password or this user already exists!"
+    user_name = request.form['username']
+    password = request.form['password']
 
-    return "This was done by getting"
+    if register(user_name,password,db):
+        return redirect(url_for('home'))
+    else:
+        return "You did not enter a username/password or this user already exists!"
+
 
 @app.route("/newuser", methods=["GET","POST"])
 def newuser():
@@ -89,9 +88,9 @@ def book_api(isbn):
 @app.route("/books/<int:isbn>", methods=["GET","POST"])
 def book_page(isbn):
     """opens book page"""
-    book_information = get_book_info(isbn,db)
+    book_information = get_book_info(isbn,db) # pulls from PostgreSQL Database
 
-    book_data = {}
+    book_data = {} # This will pass a dictionary object to Book.hmtl
     for info in book_information:
         isbn_ = (info['isbn']).encode('utf-8')
         if not (isbn_).isdigit():
@@ -100,6 +99,14 @@ def book_page(isbn):
             book_data['isbn'] = isbn_
         book_data['author'] = (info['author']).encode('utf-8')
         book_data['title'] = (info['title']).encode('utf-8')
+        book_data['year'] = (info['year']).encode('utf-8')
+        res = requests.get("https://www.goodreads.com/book/review_counts.json", \
+        params={"key": api_key, "isbns": isbn_})
+        goodreads_book_info=res.json()
+        book_data['average_rating'] = goodreads_book_info['books'][0]['average_rating']
+        book_data['total_reviews'] = goodreads_book_info['books'][0]['reviews_count']
+
+
 
     review_list = []
     review_information = get_reviews(isbn,db)
@@ -108,7 +115,9 @@ def book_page(isbn):
         (info['review']).encode('utf-8')])
 
     return render_template("book.html",isbn=int(book_data['isbn']),\
-    author=book_data['author'],title=book_data['title'], reviews = review_list)
+    author=book_data['author'],title=book_data['title'], year=book_data['year'],\
+    average_rating=book_data['average_rating'],\
+    total_reviews=book_data['total_reviews'],reviews = review_list)
 
 @app.route("/results", methods=["GET","POST"])
 def search():
@@ -118,7 +127,6 @@ def search():
         query2 = request.form['Searchbar2']
         query3 = request.form['Searchbar3']
         results =  search_books(query1,query2,query3,db) # calls from communicator class
-        print (results)
 
         isbn_list = []
         authors = []
@@ -133,8 +141,8 @@ def search():
                 isbn_result = isbn_result[0:len(isbn_result)-1]
 
             list2.append( int(isbn_result) )
-            list2.append((result['author']).encode('utf-8'))
-            list2.append((result['title']).encode('utf-8'))
+            list2.append('Author: ' + str((result['author']).encode('utf-8')))
+            list2.append('Title: '+ str((result['title']).encode('utf-8')))
             list1.append(list2)
             list2 = []
 
