@@ -28,18 +28,18 @@ db = scoped_session(sessionmaker(bind=engine))
 @app.route("/")
 def index():
     """Login Page"""
+    session.clear() # clears the session cookie from a previous user login
     return render_template("login.html")
 
 @app.route("/home")
 def home():
-    return render_template("home.html")
-
-@app.route("/submit_review/<int:isbn>", methods=["POST"])
-def submit_review(isbn):
-    """Submits a review to "reviews," our PostgreSQL Database"""
-    review = request.form['text']
-    new_review(isbn,review,session['username'],db)
-    return redirect(url_for('/books/<int:isbn>'))
+    """ Open Homepage or back to Login """
+    #if a user is logged in, then take to home screen
+    # else go back to the login screen
+    if bool(session):
+        return render_template("home.html")
+    else:
+        return redirect(url_for("index"))
 
 @app.route("/login", methods=["GET","POST"])
 def login():
@@ -48,16 +48,15 @@ def login():
         user_name = request.form['username']
         password = request.form['password']
 
+        print (session)
         if check_login(user_name,password,db):
-            session.clear()
             session['username'] = user_name
-            print (session)
             return redirect(url_for('home'))
         else:
             return "These aren't the droids you're looking for"
-    # return to root if it was a Get Request
+    # return to home page if user already logged in
     else:
-        return redirect(url_for('index'))
+        return redirect(url_for('home'))
 
 @app.route("/registration", methods=["POST","GET"])
 def registration():
@@ -129,6 +128,13 @@ def book_page(isbn):
     author=book_data['author'],title=book_data['title'], year=book_data['year'],\
     average_rating=book_data['average_rating'],\
     total_reviews=book_data['total_reviews'],reviews = review_list)
+
+@app.route("/submit_review/<int:isbn>", methods=["GET","POST"])
+def submit_review(isbn):
+    """Submits a review to "reviews," our PostgreSQL Database"""
+    review = request.form['text']
+    new_review(isbn,review,session['username'],db)
+    return redirect(url_for('book_page',isbn=isbn))
 
 @app.route("/results", methods=["POST"])
 def search():

@@ -1,6 +1,5 @@
 import os
 import psycopg2
-
 from flask import Flask, session, render_template, request
 from flask import url_for
 from flask_session import Session
@@ -68,5 +67,5 @@ def get_reviews(isbn,database):
 
 def new_review(isbn,text,username,database):
     """Inserts a new review into our Database"""
-    database.execute("INSERT INTO reviews (username,review,book_isbn) VALUES (:username,:reviews,:book_isbn)",{"username":user,"review":text,"book_isbn":isbn})
+    database.execute("INSERT INTO reviews (username,review,book_isbn) VALUES (:username,:review,:book_isbn)",{"username":username,"review":text,"book_isbn":isbn})
     database.commit()

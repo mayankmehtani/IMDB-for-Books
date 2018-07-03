@@ -50,7 +50,7 @@
       <br>
     {% endfor %}
 
-    <form id = "form1" action="{{url_for('submit_review({{isbn}})')}}">
+    <form id = "form1" action="{{ url_for('submit_review', isbn=isbn) }}" method="POST">
       <textarea style="width:500px; height:100px" name = 'text'>
       </textarea>
     </form>
