@@ -34,6 +34,13 @@ def index():
 def home():
     return render_template("home.html")
 
+@app.route("/submit_review/<int:isbn>", methods=["POST"])
+def submit_review(isbn):
+    """Submits a review to "reviews," our PostgreSQL Database"""
+    review = request.form['text']
+    new_review(isbn,review,session['username'],db)
+    return redirect(url_for('/books/<int:isbn>'))
+
 @app.route("/login", methods=["GET","POST"])
 def login():
     """Log In Method"""
@@ -42,14 +49,19 @@ def login():
         password = request.form['password']
 
         if check_login(user_name,password,db):
+            session.clear()
+            session['username'] = user_name
+            print (session)
             return redirect(url_for('home'))
         else:
             return "These aren't the droids you're looking for"
+    # return to root if it was a Get Request
+    else:
+        return redirect(url_for('index'))
 
 @app.route("/registration", methods=["POST","GET"])
 def registration():
     """Signs Up"""
-
     user_name = request.form['username']
     password = request.form['password']
 
@@ -57,7 +69,6 @@ def registration():
         return redirect(url_for('home'))
     else:
         return "You did not enter a username/password or this user already exists!"
-
 
 @app.route("/newuser", methods=["GET","POST"])
 def newuser():
@@ -100,13 +111,13 @@ def book_page(isbn):
         book_data['author'] = (info['author']).encode('utf-8')
         book_data['title'] = (info['title']).encode('utf-8')
         book_data['year'] = (info['year']).encode('utf-8')
+
+        # information which we called from the GoodReads API
         res = requests.get("https://www.goodreads.com/book/review_counts.json", \
         params={"key": api_key, "isbns": isbn_})
         goodreads_book_info=res.json()
         book_data['average_rating'] = goodreads_book_info['books'][0]['average_rating']
         book_data['total_reviews'] = goodreads_book_info['books'][0]['reviews_count']
-
-
 
     review_list = []
     review_information = get_reviews(isbn,db)
@@ -119,7 +130,7 @@ def book_page(isbn):
     average_rating=book_data['average_rating'],\
     total_reviews=book_data['total_reviews'],reviews = review_list)
 
-@app.route("/results", methods=["GET","POST"])
+@app.route("/results", methods=["POST"])
 def search():
     """Search Results"""
     if request.method == 'POST':
@@ -147,3 +158,8 @@ def search():
             list2 = []
 
     return render_template('results.html',results=list1)
+
+@app.route("/logout", methods = ["POST"])
+def logout():
+    session.clear()
+    return render_template("home.html")

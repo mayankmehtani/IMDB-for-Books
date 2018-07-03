@@ -46,7 +46,7 @@ def search_books(isbn_query,author_query,title_query,database):
     if author_query == "%%":
         author_query = 'With a foreward by 999941234rr'
 
-    # something definitely not possible if the user did not enter a title to search for
+    # something definitely not possible if the user did not enter a title
     if title_query == '%%':
         title_query = "The Bigly Curious Case of Donald Trump"
 
@@ -65,3 +65,8 @@ def get_reviews(isbn,database):
     isbn_query = '%{0}%'.format(isbn)
     results = database.execute("SELECT * FROM reviews WHERE (book_isbn like :book_isbn)",{"book_isbn":isbn_query})
     return results
+
+def new_review(isbn,text,username,database):
+    """Inserts a new review into our Database"""
+    database.execute("INSERT INTO reviews (username,review,book_isbn) VALUES (:username,:reviews,:book_isbn)",{"username":user,"review":text,"book_isbn":isbn})
+    database.commit()

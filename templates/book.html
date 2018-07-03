@@ -41,9 +41,8 @@
           </u>
       </h3>
 
-
     {% for review in reviews %}
-        Review By: {{review[0]}}
+      Review By: {{review[0]}}
       <br>
       <br>
       {{review[1]}}
@@ -51,8 +50,8 @@
       <br>
     {% endfor %}
 
-    <form id = "form1">
-      <textarea style="width:500px; height:100px">
+    <form id = "form1" action="{{url_for('submit_review({{isbn}})')}}">
+      <textarea style="width:500px; height:100px" name = 'text'>
       </textarea>
     </form>
     <button type="submit" form="form1" value="Submit">Submit</button>
