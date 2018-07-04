@@ -66,6 +66,14 @@ def get_reviews(isbn,database):
     return results
 
 def new_review(isbn,text,username,database):
-    """Inserts a new review into our Database"""
+    """Inserts a new review of a book into the database, if not there already"""
+    isbn_query = '%{0}%'.format(isbn)
+    results = database.execute("SELECT * FROM reviews WHERE (book_isbn like :book_isbn) and (username like :username)",{"book_isbn":isbn_query,"username":username})
+
+    # if the user has already submitted a review return False
+    for _r in results:
+        return False
+
     database.execute("INSERT INTO reviews (username,review,book_isbn) VALUES (:username,:review,:book_isbn)",{"username":username,"review":text,"book_isbn":isbn})
     database.commit()
+    return True

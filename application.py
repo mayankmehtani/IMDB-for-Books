@@ -133,8 +133,14 @@ def book_page(isbn):
 def submit_review(isbn):
     """Submits a review to "reviews," our PostgreSQL Database"""
     review = request.form['text']
-    new_review(isbn,review,session['username'],db)
-    return redirect(url_for('book_page',isbn=isbn))
+
+    if len(review) < 25:
+        return "Please only submit reviews that are at least 140 characters"
+    elif new_review(isbn,review,session['username'],db):
+        return redirect(url_for('book_page',isbn=isbn))
+    else:
+        return "You have already submitted a review for this book"
+
 
 @app.route("/results", methods=["POST"])
 def search():
