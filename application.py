@@ -28,7 +28,8 @@ db = scoped_session(sessionmaker(bind=engine))
 @app.route("/")
 def index():
     """Login Page"""
-    session.clear() # clears the session cookie from a previous user login
+    if 'username' in session:
+        return render_template("home.html")
     return render_template("login.html")
 
 @app.route("/home")
@@ -48,10 +49,10 @@ def login():
         user_name = request.form['username']
         password = request.form['password']
 
-        print (session)
+        # checks if the username and password combination is correct
         if check_login(user_name,password,db):
             session['username'] = user_name
-            return redirect(url_for('home'))
+            return redirect(url_for('index'))
         else:
             return "These aren't the droids you're looking for"
     # return to home page if user already logged in
@@ -64,6 +65,8 @@ def registration():
     user_name = request.form['username']
     password = request.form['password']
 
+    # Attempt to register a new user if they are already not in
+    # our Database
     if register(user_name,password,db):
         return redirect(url_for('home'))
     else:
@@ -100,7 +103,8 @@ def book_page(isbn):
     """opens book page"""
     book_information = get_book_info(isbn,db) # pulls from PostgreSQL Database
 
-    book_data = {} # This will pass a dictionary object to Book.hmtl
+    # This will pass a dictionary object to Book.hmtl
+    book_data = {}
     for info in book_information:
         isbn_ = (info['isbn']).encode('utf-8')
         if not (isbn_).isdigit():
@@ -112,7 +116,7 @@ def book_page(isbn):
         book_data['year'] = (info['year']).encode('utf-8')
 
         # information which we called from the GoodReads API
-        res = requests.get("https://www.goodreads.com/book/review_counts.json", \
+        res = requests.get("https://www.goodreads.com/book/review_counts.json",\
         params={"key": api_key, "isbns": isbn_})
         goodreads_book_info=res.json()
         book_data['average_rating'] = goodreads_book_info['books'][0]['average_rating']
@@ -134,42 +138,46 @@ def submit_review(isbn):
     """Submits a review to "reviews," our PostgreSQL Database"""
     review = request.form['text']
 
+    # text requirement
     if len(review) < 25:
-        return "Please only submit reviews that are at least 140 characters"
+        return "Please only submit reviews that are at least 25 characters"
+    # duplicate review check
     elif new_review(isbn,review,session['username'],db):
         return redirect(url_for('book_page',isbn=isbn))
     else:
         return "You have already submitted a review for this book"
 
-
 @app.route("/results", methods=["POST"])
 def search():
     """Search Results"""
     if request.method == 'POST':
-        query1 = request.form['Searchbar1']
-        query2 = request.form['Searchbar2']
-        query3 = request.form['Searchbar3']
-        results =  search_books(query1,query2,query3,db) # calls from communicator class
+        query1 = request.form['Searchbar1'] # ISBN Query
+        query2 = request.form['Searchbar2'] # Author Query
+        query3 = request.form['Searchbar3'] # Title Query
+        results =  search_books(query1,query2,query3,db) # Search based on ISBN, Author, Title
 
         isbn_list = []
         authors = []
         titles = []
 
-        list1 = []
-        list2 = []
+        all_results = []
+        search_result = []
+
+        # iterate through SQL results, so we can display to user through
+        # a jinja template
         for result in results:
             isbn_result = str((result['isbn']).encode('utf-8'))
 
             if not isbn_result.isdigit():
                 isbn_result = isbn_result[0:len(isbn_result)-1]
 
-            list2.append( int(isbn_result) )
-            list2.append('Author: ' + str((result['author']).encode('utf-8')))
-            list2.append('Title: '+ str((result['title']).encode('utf-8')))
-            list1.append(list2)
-            list2 = []
+            search_result.append( int(isbn_result) )
+            search_result.append('Author: ' + str((result['author']).encode('utf-8')))
+            search_result.append('Title: '+ str((result['title']).encode('utf-8')))
+            all_results.append(search_result)
+            search_result = []
 
-    return render_template('results.html',results=list1)
+    return render_template('results.html',results=all_results)
 
 @app.route("/logout", methods = ["POST"])
 def logout():
