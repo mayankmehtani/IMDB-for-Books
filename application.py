@@ -27,20 +27,10 @@ db = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/")
 def index():
-    """Login Page"""
+    """Home Page / Login Page"""
     if 'username' in session:
         return render_template("home.html")
     return render_template("login.html")
-
-@app.route("/home")
-def home():
-    """ Open Homepage or back to Login """
-    #if a user is logged in, then take to home screen
-    # else go back to the login screen
-    if bool(session):
-        return render_template("home.html")
-    else:
-        return redirect(url_for("index"))
 
 @app.route("/login", methods=["GET","POST"])
 def login():
@@ -100,7 +90,7 @@ def book_api(isbn):
 
 @app.route("/books/<int:isbn>", methods=["GET","POST"])
 def book_page(isbn):
-    """opens book page"""
+    """Opens a Book Page"""
     book_information = get_book_info(isbn,db) # pulls from PostgreSQL Database
 
     # This will pass a dictionary object to Book.hmtl
